@@ -137,6 +137,7 @@ public class show_pic_smile extends PermissionActivity {
 
     }
     DatabaseHelper2 db = new DatabaseHelper2(activity);
+    User user = new User();
 
     public void process(){
         Ion.with(this)
@@ -148,7 +149,7 @@ public class show_pic_smile extends PermissionActivity {
                         double dist = Double.parseDouble(result);
                         //Toast.makeText(getBaseContext(), "Risk!!!", Toast.LENGTH_LONG).show();
                         if(test(dist)){
-                            db.updateDistSm(dist,"yuriyuripps");
+                            db.updateDistSm(dist,user.getName());
                             Intent intent = new Intent(show_pic_smile.this,Risk_smile.class);
                             startActivity(intent);
                             //Toast.makeText(getBaseContext(), "Risk!!!", Toast.LENGTH_LONG).show();
@@ -169,47 +170,15 @@ public class show_pic_smile extends PermissionActivity {
 
     }
 
-//        public void process(){
-//        final User user1 = new User();
-//        Ion.with(this)
-//                .load("http://4ad8f768.ngrok.io/pro-android/smile/test.php")
-//                .asString()
-//                .setCallback(new FutureCallback<String>() {
-//                    @Override
-//                    public void onCompleted(Exception e, String result) {
-//                        Double dist = Double.parseDouble(result);
-//
-//                        if(test(dist)){
-//                            db.updateDistSm(dist,"yuriyuripps");
-//                            Intent intent = new Intent(show_pic_smile.this,Risk_smile.class);
-//                            startActivity(intent);
-//                            //db.updateDistRc(dist,"yuriyuripps");
-//                            //Toast.makeText(getBaseContext(), "Risk!!!", Toast.LENGTH_LONG).show();
-//                        }else {
-//                            Intent intent2 = new Intent(show_pic_smile.this,Norisk_smile.class);
-//                            startActivity(intent2);
-//                            //Toast.makeText(getBaseContext(), "Same!!!", Toast.LENGTH_LONG).show();
-//                        }
-//
-//
-//
-//
-//
-//
-//
-//                    }
-//                });
-//    }
-
     public boolean test(double sm){
-        if(db.checkSm("yuriyuripps")){
-            if(sm > db.avgSmile("yuriyuripps")){
+        if(db.checkSm(user.getName())){
+            if(sm > db.maxSmile(user.getName())){
                 return true;
             }else {
                 return false;
             }
         }else {
-            if(sm > 130){
+            if(sm > db.firstSmile(user.getName())){
                 return true;
             }else{
                 return false;

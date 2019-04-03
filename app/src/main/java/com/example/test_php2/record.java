@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.test_php2.R;
+import com.example.test_php2.model.User;
 import com.example.test_php2.sql.DatabaseHelper2;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -173,6 +174,7 @@ public class record extends AppCompatActivity implements View.OnClickListener{
 
 
     DatabaseHelper2 db = new DatabaseHelper2(activity);
+    User user = new User();
 
     public void process(){
         Ion.with(this)
@@ -185,7 +187,7 @@ public class record extends AppCompatActivity implements View.OnClickListener{
 
 
                         if(test(dist)){
-                            db.updateDistRc(dist,"yuriyuripps");
+                            db.updateDistRc(dist,user.getName());
                             Intent intent = new Intent(record.this,Risk_record.class);
                             startActivity(intent);
                             //Toast.makeText(getBaseContext(), "Risk!!!", Toast.LENGTH_LONG).show();
@@ -205,14 +207,14 @@ public class record extends AppCompatActivity implements View.OnClickListener{
     }
 
     public boolean test(double dist){
-        if(db.checkRc("yuriyuripps")){
-            if(dist > db.avgSound("yuriyuripps")){
+        if(db.checkRc(user.getName())){
+            if(dist > db.maxSound(user.getName())){
                 return true;
             }else {
                 return false;
             }
         }else {
-            if(dist > 130){
+            if(dist > db.firstSound(user.getName())){
                 return true;
             }else{
                 return false;

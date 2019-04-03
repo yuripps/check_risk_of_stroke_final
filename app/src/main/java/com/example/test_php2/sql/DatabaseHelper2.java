@@ -57,85 +57,6 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_TABLE_SMILE);
-        ContentValues sm = new ContentValues();
-        sm.put(COL_DIST, 2.18);
-        sm.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_SMILE, null, sm);
-
-        sm = new ContentValues();
-        sm.put(COL_DIST, 2.15);
-        sm.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_SMILE, null, sm);
-
-        sm = new ContentValues();
-        sm.put(COL_DIST, 0.05);
-        sm.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_SMILE, null, sm);
-
-        sm = new ContentValues();
-        sm.put(COL_DIST, 7.48);
-        sm.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_SMILE, null, sm);
-
-        sm = new ContentValues();
-        sm.put(COL_DIST, 2.00);
-        sm.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_SMILE, null, sm);
-        //-------------------------------------------------------------
-
-        db.execSQL(SQL_CREATE_TABLE_ARM);
-        ContentValues am = new ContentValues();
-        am.put(COL_DIST, 35.00);
-        am.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_ARM, null, am);
-
-        am = new ContentValues();
-        am.put(COL_DIST, 30.00);
-        am.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_ARM, null, am);
-
-        am = new ContentValues();
-        am.put(COL_DIST, 32.00);
-        am.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_ARM, null, am);
-
-        am = new ContentValues();
-        am.put(COL_DIST, 33.00);
-        am.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_ARM, null, am);
-
-        am = new ContentValues();
-        am.put(COL_DIST, 36.00);
-        am.put(COL_NAME, "yuriyuripps");
-        db.insert(SQL_CREATE_TABLE_ARM, null,am);
-        //-------------------------------------------------------------
-
-        db.execSQL(SQL_CREATE_TABLE_SOUND);
-        ContentValues cv = new ContentValues();
-        cv.put(COL_DIST, 123.25);
-        cv.put(COL_NAME, "yuriyuripps");
-        db.insert(SOUND_TABLE, null, cv);
-
-        cv = new ContentValues();
-        cv.put(COL_DIST, 124.25);
-        cv.put(COL_NAME, "yuriyuripps");
-        db.insert(SOUND_TABLE, null, cv);
-
-        cv = new ContentValues();
-        cv.put(COL_DIST, 128.21);
-        cv.put(COL_NAME, "yuriyuripps");
-        db.insert(SOUND_TABLE, null, cv);
-
-        cv = new ContentValues();
-        cv.put(COL_DIST, 132.24);
-        cv.put(COL_NAME, "yuriyuripps");
-        db.insert(SOUND_TABLE, null, cv);
-
-        cv = new ContentValues();
-        cv.put(COL_DIST, 129.54);
-        cv.put(COL_NAME, "yuriyuripps");
-        db.insert(SOUND_TABLE, null, cv);
 
 
 
@@ -187,7 +108,7 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
 
 
 
-            if (cursorCount > 3) {
+            if (cursorCount > 4) {
                 return true;
             } else {
                 return false;
@@ -204,7 +125,7 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
-            if (cursorCount > 3) {
+            if (cursorCount > 4) {
                 return true;
             } else {
                 return false;
@@ -212,6 +133,7 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
 
 
     }
+
 
     public boolean checkSm(String name){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -224,75 +146,91 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
         db.close();
 
 
-            if (cursorCount > 3) {
+            if (cursorCount > 4) {
                 return true;
             } else {
                 return false;
             }
-
-
-
-
     }
 
-    public double avgSound(String name){
+
+    public double maxSound(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         name = "'" + name + "'";
-        double sum = 0;
+        double max = 0;
+        double min = 1000;
         Cursor cursor = db.rawQuery("SELECT " + COL_DIST
                 + " FROM " + SOUND_TABLE + " WHERE " + COL_NAME + "= " + name , null);
-        for(int i =0; i<cursor.getCount(); ++i){
+        for(int i =cursor.getCount(); i>cursor.getCount()-5; --i){
             cursor.moveToPosition(i);
             double cr = cursor.getDouble(cursor.getColumnIndex(COL_DIST));
 
-            sum += cr;
+            if(cr > max){
+                max = cr;
+            }
+            if(cr < min){
+                min = cr;
+            }
 
         }
 
         cursor.close();
         db.close();
 
-        return sum/(cursor.getCount());
+        return max+((max-min)/2);
     }
 
-    public double avgSmile(String name){
+
+    public double maxSmile(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         name = "'" + name + "'";
-        double sum = 0;
+        double max = 0;
+        double min = 1000;
         Cursor cursor = db.rawQuery("SELECT " + COL_DIST
                 + " FROM " + SMILE_TABLE + " WHERE " + COL_NAME + "= " + name , null);
-        for(int i =0; i<cursor.getCount(); ++i){
+        for(int i =cursor.getCount(); i>cursor.getCount()-5; --i){
             cursor.moveToPosition(i);
             double cr = cursor.getDouble(cursor.getColumnIndex(COL_DIST));
 
-            sum += cr;
+            if(cr > max){
+                max = cr;
+            }
+            if(cr < min){
+                min = cr;
+            }
 
         }
 
         cursor.close();
         db.close();
 
-        return sum/cursor.getColumnCount();
+        return max+((max-min)/2);
     }
 
-    public double avgArm(String name){
+
+
+    public double maxArm(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         name = "'" + name + "'";
-        double sum = 0;
+        double max = 0;
+        double min = 1000;
         Cursor cursor = db.rawQuery("SELECT " + COL_DIST
                 + " FROM " + ARM_TABLE + " WHERE " + COL_NAME + "= " + name , null);
-        for(int i =0; i<cursor.getCount(); ++i){
+        for(int i =cursor.getCount(); i>cursor.getCount()-5; --i){
             cursor.moveToPosition(i);
             double cr = cursor.getDouble(cursor.getColumnIndex(COL_DIST));
 
-            sum += cr;
-
+            if(cr > max){
+                max = cr;
+            }
+            if(cr < min){
+                min = cr;
+            }
         }
-
-
-
-        return sum/cursor.getCount();
+        return max+((max-min)/2);
     }
+
+
 
     public String check(String name){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -308,8 +246,39 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
         return cursorCount;
 
 
+    }
 
 
+    public double firstSmile(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        name = "'" + name + "'";
+        Cursor cursor = db.rawQuery("SELECT " + COL_DIST
+                + " FROM " + SMILE_TABLE + " WHERE " + COL_NAME + "= " + name , null);
+        cursor.moveToPosition(0);
+        double cr = cursor.getDouble(cursor.getColumnIndex(COL_DIST));
+        return cr;
+    }
+
+
+    public double firstArm(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        name = "'" + name + "'";
+        Cursor cursor = db.rawQuery("SELECT " + COL_DIST
+                + " FROM " + ARM_TABLE + " WHERE " + COL_NAME + "= " + name , null);
+        cursor.moveToPosition(0);
+        double cr = cursor.getDouble(cursor.getColumnIndex(COL_DIST));
+        return cr;
+    }
+
+    
+    public double firstSound(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        name = "'" + name + "'";
+        Cursor cursor = db.rawQuery("SELECT " + COL_DIST
+                + " FROM " + SOUND_TABLE + " WHERE " + COL_NAME + "= " + name , null);
+        cursor.moveToPosition(0);
+        double cr = cursor.getDouble(cursor.getColumnIndex(COL_DIST));
+        return cr;
     }
 
 

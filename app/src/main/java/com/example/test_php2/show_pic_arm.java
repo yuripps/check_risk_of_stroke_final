@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.test_php2.R;
+import com.example.test_php2.model.User;
 import com.example.test_php2.sql.DatabaseHelper2;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -132,6 +133,7 @@ public class show_pic_arm extends AppCompatActivity {
     }
 
     DatabaseHelper2 db = new DatabaseHelper2(activity);
+    User user = new User();
 
     public void process(){
         Ion.with(this)
@@ -144,7 +146,7 @@ public class show_pic_arm extends AppCompatActivity {
 
 
                         if(test(dist)){
-                            db.updateDistArm(dist,"yuriyuripps");
+                            db.updateDistArm(dist,user.getName());
                             Intent intent = new Intent(show_pic_arm.this,Risk_record.class);
                             startActivity(intent);
                             //Toast.makeText(getBaseContext(), "Risk!!!", Toast.LENGTH_LONG).show();
@@ -163,14 +165,14 @@ public class show_pic_arm extends AppCompatActivity {
 
     }
     public boolean test(double dist){
-        if(db.checkArm("yuriyuripps")){
-            if(dist > db.avgArm("yuriyuripps")){
+        if(db.checkArm(user.getName())){
+            if(dist > db.maxArm(user.getName())){
                 return true;
             }else {
                 return false;
             }
         }else {
-            if(dist > 130){
+            if(dist > db.firstArm(user.getName())){
                 return true;
             }else{
                 return false;
