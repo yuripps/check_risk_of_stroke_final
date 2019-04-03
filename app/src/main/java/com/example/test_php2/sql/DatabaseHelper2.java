@@ -270,7 +270,7 @@ public class DatabaseHelper2  extends SQLiteOpenHelper {
         return cr;
     }
 
-    
+
     public double firstSound(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         name = "'" + name + "'";
